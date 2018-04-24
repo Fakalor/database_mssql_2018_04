@@ -1,0 +1,24 @@
+﻿<Window x:Class="projekt_bazy.ShowMessRoom"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:projekt_bazy"
+        mc:Ignorable="d"
+        Title="ShowMessRoom" Height="500" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="4*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="1">
+            <TextBlock Name="Mess" Margin="10" TextWrapping="Wrap">
+
+            </TextBlock>
+        </ScrollViewer>
+
+        <Button x:Name="Back" Content="Powrót" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Width="200" Height="30" Click="BackClick"/>
+    </Grid>
+</Window>

@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="projekt_bazy_danychModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="public_key_user">
+    <Key>
+      <PropertyRef Name="id_key" />
+    </Key>
+    <Property Name="id_key" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="id_user" Type="Int32" Nullable="false" />
+    <Property Name="public_key" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="users" Relationship="Self.FK_public_key_user_user" FromRole="public_key_user" ToRole="users" />
+  </EntityType>
+  <EntityType Name="room_key">
+    <Key>
+      <PropertyRef Name="id_room_key" />
+    </Key>
+    <Property Name="id_room_key" Type="Int32" Nullable="false" />
+    <Property Name="id_room" Type="Int32" />
+    <Property Name="symetric_key" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="rooms" Relationship="Self.FK_room_key_rooms" FromRole="room_key" ToRole="rooms" />
+  </EntityType>
+  <EntityType Name="rooms">
+    <Key>
+      <PropertyRef Name="id_room" />
+    </Key>
+    <Property Name="id_room" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name_room" Type="String" MaxLength="45" FixedLength="true" Unicode="true" />
+    <Property Name="limit" Type="Int32" />
+    <NavigationProperty Name="room_key" Relationship="Self.FK_room_key_rooms" FromRole="rooms" ToRole="room_key" />
+    <NavigationProperty Name="messages" Relationship="Self.FK_messages_rooms" FromRole="rooms" ToRole="messages" />
+    <NavigationProperty Name="rooms_members" Relationship="Self.FK_rooms_members_rooms" FromRole="rooms" ToRole="rooms_members" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="users">
+    <Key>
+      <PropertyRef Name="id_user" />
+    </Key>
+    <Property Name="id_user" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="login" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+    <Property Name="email" Type="String" MaxLength="25" FixedLength="true" Unicode="true" />
+    <Property Name="description" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="password" Type="String" MaxLength="25" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="public_key_user" Relationship="Self.FK_public_key_user_user" FromRole="users" ToRole="public_key_user" />
+    <NavigationProperty Name="rooms_members" Relationship="Self.FK_rooms_members_user" FromRole="users" ToRole="rooms_members" />
+  </EntityType>
+  <EntityType Name="messages">
+    <Key>
+      <PropertyRef Name="id_room" />
+    </Key>
+    <Property Name="id_room" Type="Int32" Nullable="false" />
+    <Property Name="message" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="rooms" Relationship="Self.FK_messages_rooms" FromRole="messages" ToRole="rooms" />
+  </EntityType>
+  <EntityType Name="rooms_members">
+    <Key>
+      <PropertyRef Name="id_user" />
+      <PropertyRef Name="id_room" />
+    </Key>
+    <Property Name="id_user" Type="Int32" Nullable="false" />
+    <Property Name="id_room" Type="Int32" Nullable="false" />
+    <Property Name="exit_date" Type="DateTime" Precision="0" />
+    <NavigationProperty Name="rooms" Relationship="Self.FK_rooms_members_rooms" FromRole="rooms_members" ToRole="rooms" />
+    <NavigationProperty Name="users" Relationship="Self.FK_rooms_members_user" FromRole="rooms_members" ToRole="users" />
+  </EntityType>
+  <Association Name="FK_public_key_user_user">
+    <End Role="users" Type="Self.users" Multiplicity="1" />
+    <End Role="public_key_user" Type="Self.public_key_user" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="users">
+        <PropertyRef Name="id_user" />
+      </Principal>
+      <Dependent Role="public_key_user">
+        <PropertyRef Name="id_user" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_room_key_rooms">
+    <End Role="rooms" Type="Self.rooms" Multiplicity="0..1" />
+    <End Role="room_key" Type="Self.room_key" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="rooms">
+        <PropertyRef Name="id_room" />
+      </Principal>
+      <Dependent Role="room_key">
+        <PropertyRef Name="id_room" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_messages_rooms">
+    <End Role="rooms" Type="Self.rooms" Multiplicity="1" />
+    <End Role="messages" Type="Self.messages" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="rooms">
+        <PropertyRef Name="id_room" />
+      </Principal>
+      <Dependent Role="messages">
+        <PropertyRef Name="id_room" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_rooms_members_rooms">
+    <End Role="rooms" Type="Self.rooms" Multiplicity="1" />
+    <End Role="rooms_members" Type="Self.rooms_members" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="rooms">
+        <PropertyRef Name="id_room" />
+      </Principal>
+      <Dependent Role="rooms_members">
+        <PropertyRef Name="id_room" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_rooms_members_user">
+    <End Role="users" Type="Self.users" Multiplicity="1" />
+    <End Role="rooms_members" Type="Self.rooms_members" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="users">
+        <PropertyRef Name="id_user" />
+      </Principal>
+      <Dependent Role="rooms_members">
+        <PropertyRef Name="id_user" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="projekt_bazy_danychEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="public_key_user" EntityType="Self.public_key_user" />
+    <EntitySet Name="room_key" EntityType="Self.room_key" />
+    <EntitySet Name="rooms" EntityType="Self.rooms" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <EntitySet Name="users" EntityType="Self.users" />
+    <EntitySet Name="messages" EntityType="Self.messages" />
+    <EntitySet Name="rooms_members" EntityType="Self.rooms_members" />
+    <AssociationSet Name="FK_public_key_user_user" Association="Self.FK_public_key_user_user">
+      <End Role="users" EntitySet="users" />
+      <End Role="public_key_user" EntitySet="public_key_user" />
+    </AssociationSet>
+    <AssociationSet Name="FK_room_key_rooms" Association="Self.FK_room_key_rooms">
+      <End Role="rooms" EntitySet="rooms" />
+      <End Role="room_key" EntitySet="room_key" />
+    </AssociationSet>
+    <AssociationSet Name="FK_messages_rooms" Association="Self.FK_messages_rooms">
+      <End Role="rooms" EntitySet="rooms" />
+      <End Role="messages" EntitySet="messages" />
+    </AssociationSet>
+    <AssociationSet Name="FK_rooms_members_rooms" Association="Self.FK_rooms_members_rooms">
+      <End Role="rooms" EntitySet="rooms" />
+      <End Role="rooms_members" EntitySet="rooms_members" />
+    </AssociationSet>
+    <AssociationSet Name="FK_rooms_members_user" Association="Self.FK_rooms_members_user">
+      <End Role="users" EntitySet="users" />
+      <End Role="rooms_members" EntitySet="rooms_members" />
+    </AssociationSet>
+    <FunctionImport Name="sp_alterdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_creatediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_dropdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(projekt_bazy_danychModel.sp_helpdiagramdefinition_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(projekt_bazy_danychModel.sp_helpdiagrams_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_renamediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="new_diagramname" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="sp_upgraddiagrams" />
+    <FunctionImport Name="WyswietlUzytkownikow" ReturnType="Collection(projekt_bazy_danychModel.WyswietlUzytkownikow_Result)" />
+  </EntityContainer>
+  <ComplexType Name="sp_helpdiagramdefinition_Result">
+    <Property Type="Int32" Name="version" Nullable="true" />
+    <Property Type="Binary" Name="definition" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="sp_helpdiagrams_Result">
+    <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+    <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+    <Property Type="Int32" Name="ID" Nullable="false" />
+    <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+    <Property Type="Int32" Name="OwnerID" Nullable="false" />
+  </ComplexType>
+  <ComplexType Name="WyswietlUzytkownikow_Result">
+    <Property Type="Int32" Name="id_room" Nullable="false" />
+    <Property Type="String" Name="name_room" Nullable="true" MaxLength="45" />
+    <Property Type="Int32" Name="limit" Nullable="true" />
+  </ComplexType>
+</Schema>

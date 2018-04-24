@@ -1,0 +1,33 @@
+﻿<Window x:Class="projekt_bazy.ShowRoomDetails"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:projekt_bazy"
+        mc:Ignorable="d"
+        Title="ShowRoomDetails" Height="600" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            
+            <RowDefinition Height="0.7*" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <Label x:Name="label" Content="ID: " HorizontalAlignment="Center"  VerticalAlignment="Center" Grid.Row="0" Height="30"  Width="270"/>
+        <Label x:Name="label2" Content="Nazwa pokoju: " HorizontalAlignment="Center"  VerticalAlignment="Center" Grid.Row="1" Height="30"  Width="270"/>
+        <Label x:Name="label3" Content="Limit osób: " HorizontalAlignment="Center"  VerticalAlignment="Center" Grid.Row="2" Height="30"  Width="270"/>
+        <Label x:Name="label4" Content="Klucz: " HorizontalAlignment="Center"  VerticalAlignment="Center" Grid.Row="3" Height="30"  Width="270"/>
+        <Label x:Name="label5" Content="Lista osób będących w pokoju: " HorizontalAlignment="Center"  VerticalAlignment="Center" Grid.Row="4" Height="30"  Width="270"/>
+        <DataGrid x:Name="dataGrid" HorizontalAlignment="Center"  VerticalAlignment="Center" Grid.Row="5" Height="140"  Width="270"/>
+
+        <Button x:Name="Back" Content="Powrót" HorizontalAlignment="Center"  VerticalAlignment="Center" Grid.Row="7" Height="30"  Width="200" Click="BackClick"/>
+        <Button x:Name="AddUser" Content="Dodaj użytkownika" HorizontalAlignment="Left"  Grid.Row="6" VerticalAlignment="Center" Height="25" Width="120" Margin="10,17,0,17" Click="AddUser_Click"/>
+        <Button x:Name="DelUser" Content="Usuń użytkownika" HorizontalAlignment="Right"  Grid.Row="6" VerticalAlignment="Center" Height="25" Width="120" Margin="0,17,10,17" Click="DelUser_Click"/>
+    </Grid>
+</Window>

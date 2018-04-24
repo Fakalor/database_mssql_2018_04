@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="projekt_bazy_danychModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'projekt_bazy_danych.dbo.messages' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="messages">
+    <Key>
+      <PropertyRef Name="id_room" />
+    </Key>
+    <Property Name="id_room" Type="int" Nullable="false" />
+    <Property Name="message" Type="varchar(max)" />
+  </EntityType>
+  <EntityType Name="public_key_user">
+    <Key>
+      <PropertyRef Name="id_key" />
+    </Key>
+    <Property Name="id_key" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="id_user" Type="int" Nullable="false" />
+    <Property Name="public_key" Type="nchar" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="room_key">
+    <Key>
+      <PropertyRef Name="id_room_key" />
+    </Key>
+    <Property Name="id_room_key" Type="int" Nullable="false" />
+    <Property Name="id_room" Type="int" />
+    <Property Name="symetric_key" Type="varchar" MaxLength="40" />
+  </EntityType>
+  <EntityType Name="rooms">
+    <Key>
+      <PropertyRef Name="id_room" />
+    </Key>
+    <Property Name="id_room" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name_room" Type="nchar" MaxLength="45" />
+    <Property Name="limit" Type="int" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'projekt_bazy_danych.dbo.rooms_members' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="rooms_members">
+    <Key>
+      <PropertyRef Name="id_user" />
+      <PropertyRef Name="id_room" />
+    </Key>
+    <Property Name="id_user" Type="int" Nullable="false" />
+    <Property Name="id_room" Type="int" Nullable="false" />
+    <Property Name="exit_date" Type="date" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="users">
+    <Key>
+      <PropertyRef Name="id_user" />
+    </Key>
+    <Property Name="id_user" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="login" Type="nchar" MaxLength="20" />
+    <Property Name="email" Type="nchar" MaxLength="25" />
+    <Property Name="description" Type="nchar" MaxLength="10" />
+    <Property Name="password" Type="nchar" MaxLength="25" />
+  </EntityType>
+  <Association Name="FK_messages_rooms">
+    <End Role="rooms" Type="Self.rooms" Multiplicity="1" />
+    <End Role="messages" Type="Self.messages" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="rooms">
+        <PropertyRef Name="id_room" />
+      </Principal>
+      <Dependent Role="messages">
+        <PropertyRef Name="id_room" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_public_key_user_user">
+    <End Role="users" Type="Self.users" Multiplicity="1" />
+    <End Role="public_key_user" Type="Self.public_key_user" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="users">
+        <PropertyRef Name="id_user" />
+      </Principal>
+      <Dependent Role="public_key_user">
+        <PropertyRef Name="id_user" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_room_key_rooms">
+    <End Role="rooms" Type="Self.rooms" Multiplicity="0..1" />
+    <End Role="room_key" Type="Self.room_key" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="rooms">
+        <PropertyRef Name="id_room" />
+      </Principal>
+      <Dependent Role="room_key">
+        <PropertyRef Name="id_room" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_rooms_members_rooms">
+    <End Role="rooms" Type="Self.rooms" Multiplicity="1" />
+    <End Role="rooms_members" Type="Self.rooms_members" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="rooms">
+        <PropertyRef Name="id_room" />
+      </Principal>
+      <Dependent Role="rooms_members">
+        <PropertyRef Name="id_room" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_rooms_members_user">
+    <End Role="users" Type="Self.users" Multiplicity="1" />
+    <End Role="rooms_members" Type="Self.rooms_members" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="users">
+        <PropertyRef Name="id_user" />
+      </Principal>
+      <Dependent Role="rooms_members">
+        <PropertyRef Name="id_user" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+  <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+    <Parameter Name="version" Type="int" Mode="In" />
+    <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+  </Function>
+  <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+    <Parameter Name="version" Type="int" Mode="In" />
+    <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+  </Function>
+  <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+    <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+  </Function>
+  <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="WyswietlUzytkownikow" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <EntityContainer Name="projekt_bazy_danychModelStoreContainer">
+    <EntitySet Name="public_key_user" EntityType="Self.public_key_user" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="room_key" EntityType="Self.room_key" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="rooms" EntityType="Self.rooms" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="users" EntityType="Self.users" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="messages" EntityType="Self.messages" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [messages].[id_room] AS [id_room], 
+    [messages].[message] AS [message]
+    FROM [dbo].[messages] AS [messages]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="rooms_members" EntityType="Self.rooms_members" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [rooms_members].[id_user] AS [id_user], 
+    [rooms_members].[id_room] AS [id_room], 
+    [rooms_members].[exit_date] AS [exit_date]
+    FROM [dbo].[rooms_members] AS [rooms_members]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="FK_messages_rooms" Association="Self.FK_messages_rooms">
+      <End Role="rooms" EntitySet="rooms" />
+      <End Role="messages" EntitySet="messages" />
+    </AssociationSet>
+    <AssociationSet Name="FK_public_key_user_user" Association="Self.FK_public_key_user_user">
+      <End Role="users" EntitySet="users" />
+      <End Role="public_key_user" EntitySet="public_key_user" />
+    </AssociationSet>
+    <AssociationSet Name="FK_room_key_rooms" Association="Self.FK_room_key_rooms">
+      <End Role="rooms" EntitySet="rooms" />
+      <End Role="room_key" EntitySet="room_key" />
+    </AssociationSet>
+    <AssociationSet Name="FK_rooms_members_rooms" Association="Self.FK_rooms_members_rooms">
+      <End Role="rooms" EntitySet="rooms" />
+      <End Role="rooms_members" EntitySet="rooms_members" />
+    </AssociationSet>
+    <AssociationSet Name="FK_rooms_members_user" Association="Self.FK_rooms_members_user">
+      <End Role="users" EntitySet="users" />
+      <End Role="rooms_members" EntitySet="rooms_members" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
